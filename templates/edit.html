@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Expense</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background:
+                radial-gradient(ellipse at top left, rgba(124, 92, 255, 0.13), transparent 35%),
+                #080d1a;
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 40px auto;
+            background: linear-gradient(145deg, #151f33, #101827);
+            padding: 35px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        h2 {
+            text-align: center;
+            color: #f1f5f9;
+            margin-bottom: 25px;
+            font-size: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px 15px;
+            background: #0b1423;
+            border: 1px solid #29364b;
+            border-radius: 9px;
+            color: #f1f5f9;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #7c5cff;
+            box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.15);
+        }
+
+        input[type="date"] {
+            color-scheme: dark;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 25px;
+            background: linear-gradient(110deg, #7657ff, #4f8cff);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.12);
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back:hover {
+            color: #a78bfa;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 23px;
+                margin: 15px auto;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>Edit Expense</h2>
+
+        <form action="/edit/{{ expense[0] }}" method="POST">
+
+            <label>Expense Name</label>
+
+            <input
+                type="text"
+                name="expense_name"
+                value="{{ expense[1] }}"
+                required
+            >
+
+            <label>Category</label>
+
+            <select name="category" id="category" required>
+
+                <option value="Food"
+                    {% if expense[2] == 'Food' %}selected{% endif %}>
+                    Food
+                </option>
+
+                <option value="Travel"
+                    {% if expense[2] == 'Travel' %}selected{% endif %}>
+                    Travel
+                </option>
+
+                <option value="Shopping"
+                    {% if expense[2] == 'Shopping' %}selected{% endif %}>
+                    Shopping
+                </option>
+
+                <option value="Education"
+                    {% if expense[2] == 'Education' %}selected{% endif %}>
+                    Education
+                </option>
+
+                <option value="Health"
+                    {% if expense[2] == 'Health' %}selected{% endif %}>
+                    Health
+                </option>
+
+                <option value="Other"
+                    {% if expense[2] not in ['Food', 'Travel', 'Shopping', 'Education', 'Health'] %}selected{% endif %}>
+                    Other
+                </option>
+
+            </select>
+
+            <div id="custom-category-box"
+                 {% if expense[2] in ['Food', 'Travel', 'Shopping', 'Education', 'Health'] %}hidden{% endif %}>
+
+                <label>Enter Custom Category</label>
+
+                <input
+                    type="text"
+                    name="custom_category"
+                    id="custom_category"
+                    value="{{ expense[2] if expense[2] not in ['Food', 'Travel', 'Shopping', 'Education', 'Health'] else '' }}"
+                    placeholder="Example: Entertainment, Recharge, Rent"
+                >
+
+            </div>
+
+            <label>Amount (₹)</label>
+
+            <input
+                type="number"
+                name="amount"
+                value="{{ expense[3] }}"
+                step="0.01"
+                min="0.01"
+                required
+            >
+
+            <label>Expense Date</label>
+
+            <input
+                type="date"
+                name="expense_date"
+                value="{{ expense[4] }}"
+                required
+            >
+
+            <button type="submit">Update Expense</button>
+
+        </form>
+
+        <a href="/" class="back">← Back to Dashboard</a>
+
+    </div>
+
+    <script>
+
+        const categorySelect = document.getElementById("category");
+        const customCategoryBox = document.getElementById("custom-category-box");
+        const customCategoryInput = document.getElementById("custom_category");
+
+        function toggleCustomCategory() {
+
+            if (categorySelect.value === "Other") {
+
+                customCategoryBox.hidden = false;
+                customCategoryInput.required = true;
+
+            } else {
+
+                customCategoryBox.hidden = true;
+                customCategoryInput.required = false;
+                customCategoryInput.value = "";
+
+            }
+
+        }
+
+        categorySelect.addEventListener("change", toggleCustomCategory);
+
+        toggleCustomCategory();
+
+    </script>
+
+</body>
+</html>
